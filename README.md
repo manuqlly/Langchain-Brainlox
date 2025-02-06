@@ -1,6 +1,11 @@
 # Langchain-Brainlox
 
-Langchain-Brainlox is a Flask-based application that leverages Langchain and OpenAI to provide a question-answering (QA) service using embeddings and vector stores.
+Langchain-Brainlox is a FastAPI-based application that leverages Langchain and OpenAI to provide a question-answering (QA) service using embeddings and vector stores.
+
+## Demo Screenshot
+![Application Screenshot](demo.JPG)
+
+*Note: Make sure to add your screenshot as `demo-screenshot.png` in the root directory*
 
 ## Project Structure
 
@@ -10,11 +15,12 @@ Langchain-Brainlox/
 ├── .env
 ├── .gitattributes
 ├── .gitignore
-├── app.py
-├── dataIngest.py
-├── faiss_index/
+├── app.py           # FastAPI application
+├── dataIngest.py   # Data ingestion script
+├── faiss_index/    # Vector store directory
 │   ├── index.faiss
 │   └── index.pkl
+├── index.html      # Frontend interface
 ├── README.md
 ├── requirements.txt
 └── venv/
@@ -58,12 +64,20 @@ python dataIngest.py
 
 ## Running the Application
 
-To start the Flask application, run the `app.py` script:
+To start the FastAPI application, run the `app.py` script:
 ```sh
 python app.py
 ```
 
-The application will be available at `http://127.0.0.1:5000`.
+The application will be available at `http://localhost:8000`.
+
+## Features
+
+- Interactive chat interface
+- Vector store-based document retrieval
+- Integration with OpenAI's GPT models
+- Real-time response streaming
+- Responsive web design
 
 ## API Endpoints
 
@@ -84,3 +98,7 @@ The application will be available at `http://127.0.0.1:5000`.
     "response": "Answer from the model"
 }
 ```
+
+## License
+
+This project is licensed under the MIT License.

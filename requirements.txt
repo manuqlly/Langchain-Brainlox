@@ -8,3 +8,5 @@ html5lib
 openai
 python-dotenv
 requests
+fastapi
+uvicorn

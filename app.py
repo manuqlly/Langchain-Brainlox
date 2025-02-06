@@ -1,37 +1,54 @@
-from flask import Flask, request, jsonify
-from flask_restful import Api, Resource
-from langchain_huggingface import HuggingFaceEmbeddings  # Updated import
-from langchain_openai import ChatOpenAI  # Updated import
+from fastapi import FastAPI, HTTPException
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_openai import ChatOpenAI
 from langchain_community.vectorstores import FAISS
 from langchain.chains import RetrievalQA
 import os
+import uvicorn
 from dotenv import load_dotenv
 
-load_dotenv() 
-app = Flask(__name__)
-api = Api(app)
+# Load environment variables
+load_dotenv()
+
+app = FastAPI()
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+class QueryRequest(BaseModel):
+    query: str
 
 # Load embeddings and vector store
 embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 vector_store = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
 
-# Initialize language model and QA chain
+# Initialize LLM and QA Chain
 llm = ChatOpenAI(openai_api_key=os.getenv("OPENAI_API_KEY"), model_name="gpt-4o-mini")
-qa = RetrievalQA.from_chain_type(llm, retriever=vector_store.as_retriever())
+qa = RetrievalQA.from_chain_type(llm=llm, chain_type="stuff", retriever=vector_store.as_retriever())
 
-class Chat(Resource):
-    def post(self):
-        data = request.get_json()
-        query = data.get("query")
-        if not query:
-            return {"error": "No query provided"}, 400
-        try:
-            result = qa.invoke(query)  # Ensure invoke() is used instead of run()
-            return {"response": result}, 200
-        except Exception as e:
-            return {"error": str(e)}, 500
+@app.get("/")
+def serve_frontend():
+    return FileResponse("index.html")
 
-api.add_resource(Chat, "/chat")
+@app.post("/chat")
+async def chat(request: QueryRequest):
+    if not request.query:
+        raise HTTPException(status_code=400, detail="No query provided")
+    
+    try:
+        result = qa.invoke({"query": request.query})
+        return JSONResponse(content={"response": result["result"]})
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
