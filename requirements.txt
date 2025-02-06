@@ -1,0 +1,10 @@
+langchain
+langchain-community
+faiss-cpu
+flask
+flask-restful
+beautifulsoup4
+html5lib
+openai
+python-dotenv
+requests
