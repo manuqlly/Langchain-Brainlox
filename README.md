@@ -5,8 +5,6 @@ Langchain-Brainlox is a FastAPI-based application that leverages Langchain and O
 ## Demo Screenshot
 ![Application Screenshot](demo.JPG)
 
-*Note: Make sure to add your screenshot as `demo-screenshot.png` in the root directory*
-
 ## Project Structure
 
 ```
