@@ -1,6 +1,7 @@
 # Langchain-Brainlox
 
 Langchain-Brainlox is a FastAPI-based application that leverages Langchain and OpenAI to provide a question-answering (QA) service using embeddings and vector stores.
+Note: This Model is trained on https://brainlox.com/ with 70+ sub pages, the accuracy of the data is somewhat alright, in future we can improve it.
 
 ## Demo Screenshot
 ![Application Screenshot](demo.JPG)
